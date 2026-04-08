@@ -11,10 +11,11 @@ COPY package*.json ./
 RUN npm install
 
 # Copy all files
-COPY . .
+#COPY . .
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose Vite port
-EXPOSE 5173
-
+#EXPOSE 5173
+EXPOSE 80
 # Start app
 CMD ["npm", "run", "dev", "--", "--host"]
