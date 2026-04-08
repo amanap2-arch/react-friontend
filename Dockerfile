@@ -1,21 +1,19 @@
-# Use Node 20 (stable with Vite, Node 24 can have issues)
-FROM node:24
+# 🔥 Stage 1: Build React App
+FROM node:24 AS build
 
-# Set working directory
-WORKDIR /src
+WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy all files
-#COPY . .
+COPY . .
+RUN npm run build
+
+# 🔥 Stage 2: Nginx server
+FROM nginx:alpine
+
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Expose Vite port
-#EXPOSE 5173
 EXPOSE 80
-# Start app
-CMD ["npm", "run", "dev", "--", "--host"]
+
+CMD ["nginx", "-g", "daemon off;"]
